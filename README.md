@@ -1,66 +1,223 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## How to Access
 
-## About Laravel
+I'm implementing a REST resource using Laravel Endpoint
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+    GET /api/users/{userId}/history
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Steps
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+    Run migrations and seed test data.
 
-## Learning Laravel
+    Use php artisan serve to start the Laravel server.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    Use docker-compose up to start the Docker environment.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Tables
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    Users:
 
-## Laravel Sponsors
+        user_id (PK)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+        username
 
-### Premium Partners
+        password
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+        status
 
-## Contributing
+    Sessions:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+        session_id (PK)
 
-## Code of Conduct
+        user_id (FK to Users)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+        course_id (FK to Courses)
 
-## Security Vulnerabilities
+        timestamp (Unix timestamp)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    Scores:
 
-## License
+        score_id (PK)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+        session_id (FK to Sessions)
+
+        user_id (FK to Users)
+
+        score (Total points achieved in the session)
+
+    Exercises:
+
+        exercise_id (PK)
+
+        course_id (FK to Courses)
+
+        category_id (FK to DomainCategories)
+
+        name
+
+        points
+
+    DomainCategories:
+
+        category_id (PK)
+
+        name
+
+### Relationships
+
+    A Session belongs to a User and a Course.
+
+    A Score belongs to a Session and a User.
+
+    An Exercise belongs to a Course and a DomainCategory.
+
+### Explanation of Relationships
+
+    Users:
+
+        user_id is the primary key.
+
+        Linked to Sessions via user_id.
+
+    Sessions:
+
+        session_id is the primary key.
+
+        Linked to Users via user_id.
+
+        Linked to Courses via course_id.
+
+        Linked to Scores via session_id.
+
+    Scores:
+
+        score_id is the primary key.
+
+        Linked to Sessions via session_id.
+
+        Linked to Users via user_id.
+
+    Courses:
+
+        course_id is the primary key.
+
+        Linked to Exercises via course_id.
+
+    Exercises:
+
+        exercise_id is the primary key.
+
+        Linked to Courses via course_id.
+
+        Linked to DomainCategories via category_id.
+
+    DomainCategories:
+
+        category_id is the primary key.
+
+        Linked to Exercises via category_id.
+
+### Visual Representation
+```
+Table Users {
+  user_id int [pk]
+  username varchar
+  password varchar
+  status varchar
+}
+
+Table Sessions {
+  session_id int [pk]
+  user_id int [ref: > Users.user_id]
+  course_id int [ref: > Courses.course_id]
+  timestamp int
+}
+
+Table Scores {
+  score_id int [pk]
+  session_id int [ref: > Sessions.session_id]
+  user_id int [ref: > Users.user_id]
+  score int
+}
+
+Table Courses {
+  course_id int [pk]
+  name varchar
+}
+
+Table Exercises {
+  exercise_id int [pk]
+  course_id int [ref: > Courses.course_id]
+  category_id int [ref: > DomainCategories.category_id]
+  name varchar
+  points int
+}
+
+Table DomainCategories {
+  category_id int [pk]
+  name varchar
+}
+```
+### Graphical Representation
+
+
+Here is a Graphical Representation of the optimised DB: https://drive.google.com/file/d/1_bhknf_ndq9PPMG9zPbQcneikbvVp60J/view?usp=sharing
+
+Users
+> | user_id | username |
+> |----------|----------|
+
+
+Sessions
+> | session_id | user_id  | course_id  | timestamp |
+> |----------|----------|----------|----------|
+
+
+Scores
+> | score_id | session_id  | user_id  | score |
+> |----------|----------|----------|----------|
+
+
+Exercises
+> | exercise_id | course_id  | category_id  | name | points |
+> |----------|----------|----------|----------|----------|
+
+DomainCategories
+> | category_id | name |
+> |----------|----------|
+
+
+
+### Database Schema Diagram
+```
++-------------------+       +-------------------+       +-------------------+
+|      Users        |       |     Sessions      |       |      Scores       |
++-------------------+       +-------------------+       +-------------------+
+| user_id (PK)      |<------| user_id (FK)      |<------| user_id (FK)      |
+| username          |       | session_id (PK)   |       | score_id (PK)     |
+| password          |       | course_id (FK)    |       | session_id (FK)   |
+| status            |       | timestamp         |       | score             |
++-------------------+       +-------------------+       +-------------------+
+                                  |                            |
+                                  |                            |
+                                  v                            |
++-------------------+       +-------------------+              |
+|     Courses       |       |    Exercises      |              |
++-------------------+       +-------------------+              |
+| course_id (PK)    |<------| course_id (FK)    |              |
+| name              |       | exercise_id (PK)  |              |
++-------------------+       | category_id (FK)  |              |
+                            | name              |              |
+                            | points            |              |
+                            +-------------------+              |
+                                    |                         |
+                                    |                         |
+                                    v                         |
++-------------------+               |                         |
+| DomainCategories  |               |                         |
++-------------------+               |                         |
+| category_id (PK)  |<--------------+                         |
+| name              |                                         |
++-------------------+                                         |
+
+```
