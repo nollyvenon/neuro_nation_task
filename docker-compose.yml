@@ -1,0 +1,49 @@
+#version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel_app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - ./:/var/www/html  # Map current directory to /var/www/html
+        ports:
+            - "8000:8000"
+        networks:
+            - laravel_network
+        depends_on:
+            - db
+
+    db:
+        image: mysql:5.7
+        container_name: laravel_db
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: laravel
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+        ports:
+            - "3306:3306"
+        volumes:
+            - db_data:/var/lib/mysql
+        networks:
+            - laravel_network
+
+    composer:
+        image: composer:latest
+        container_name: laravel_composer
+        volumes:
+            - ./:/var/www/html
+        working_dir: /var/www/html
+        command: composer install --ignore-platform-reqs
+
+volumes:
+    db_data:
+
+networks:
+    laravel_network:
+        driver: bridge
