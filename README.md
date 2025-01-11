@@ -1,15 +1,16 @@
 
 ## How to Access
 
-I'm implementing a REST resource using Laravel Endpoint
+I'm implementing a REST resource using Laravel
 
-    GET /api/users/{userId}/history
+Access the Endpoint:
+Use Postman or cURL to test the /users/{userId}/history endpoint:
+
+    GET http://localhost:8000/users/1/history
 
 ### Steps
 
-    Run migrations and seed test data.
-
-    Use php artisan serve to start the Laravel server.
+    Use php artisan serve to start the Laravel server. The migrations and seeders are run automatically.
 
     Use docker-compose up to start the Docker environment.
 
