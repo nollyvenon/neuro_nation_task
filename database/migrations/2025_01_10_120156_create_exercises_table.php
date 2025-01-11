@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('exercises', function (Blueprint $table) {
             $table->id('exercise_id');
             $table->unsignedBigInteger('course_id');
+            $table->unsignedBigInteger('category_id');
             $table->string('name');
             $table->integer('points');
             $table->timestamps();
 
             $table->foreign('course_id')->references('course_id')->on('courses')->onDelete('cascade');
+            $table->foreign('category_id')->references('category_id')->on('domain_categories')->onDelete('cascade');
         });
     }
 

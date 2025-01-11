@@ -9,20 +9,14 @@ services:
         restart: unless-stopped
         working_dir: /var/www/html
         volumes:
-            - ./:/var/www/html  # Map current directory to /var/www/html
+            - .:/var/www/html  # Map current directory to /var/www/html
         ports:
             - "8000:8000"
         networks:
             - laravel_network
         depends_on:
             - db
-        #environment:
-        #    - APP_ENV=local
-        #    - APP_DEBUG=true
-        #    - DB_HOST=db
-        #    - DB_PORT=3306
-        #command: >
-        #    sh -c "php artisan migrate --force"
+        command: ./start.sh
 
     db:
         image: mysql:5.7

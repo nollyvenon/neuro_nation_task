@@ -11,8 +11,8 @@ class UserController extends Controller
         // Fetch session history with scores
         $history = DB::table('sessions')
             ->join('scores', 'sessions.session_id', '=', 'scores.session_id')
-            ->where('sessions.user_id', $userId)
-            ->select('scores.score', 'sessions.timestamp as date')
+            ->where('sessions.user_id', 1)
+            ->select('scores.score', DB::raw('UNIX_TIMESTAMP(sessions.timestamp) as date'))
             ->orderBy('sessions.timestamp', 'desc')
             ->get();
 
